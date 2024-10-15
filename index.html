@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload File</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        input[type="file"] {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        #message {
+            margin-top: 20px;
+            font-size: 16px;
+            color: green;
+        }
+      
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+    <script>
+        async function uploadFile(event) {
+            event.preventDefault(); // Prevent the default form submission
+            
+            const formData = new FormData(event.target); // Get the form data
+            
+            try {
+                const response = await fetch('http://192.168.0.151:5000/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                console.log(response);
+                const data = await response.json();
+                console.log(data);
+                
+                if (response.ok) {
+                    // Get the JSON response
+                    document.getElementById('message').textContent = data.message; // Display the server's message
+                } else {
+                    document.getElementById('message').textContent = 'Upload failed. Please try again.';
+                }
+            } catch (error) {
+              console.error('Error:', error);
+                document.getElementById('message').textContent = 'An error occurred. Please try again.';
+            }
+        }
+    </script>
+</head>
+<body>
+  <div class="container">
+    <h1>Upload File</h1>
+    <form id="uploadForm" enctype="multipart/form-data" onsubmit="uploadFile(event)">
+        <input type="file" name="file" required><br><br>
+        <input type="submit" value="Upload">
+    </form>
+    <p id="message"></p>
+  </div>
+</body>
+</html>
